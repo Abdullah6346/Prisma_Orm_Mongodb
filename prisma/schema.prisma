@@ -1,10 +1,26 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String   @unique
+  phoneNumber String?
+  address     String
+  createdat   DateTime @default(now())
+  updatedat   DateTime @updatedAt
+  userid      Post[]   @relation("userid")
+}
+
+model Post {
+  id      String @id @default(uuid()) @map("_id") @db.ObjectId
+  title   String
+  User_id User   @relation("userid", fields: [userid], references: [id])
+  userid  String @db.ObjectId
 }
